@@ -2,7 +2,7 @@
 title: 青龙沧歌
 subtitle: 
 
-description: hellolzc的开发小站.
+description: 码农hellolzc的小站.
 
 creator: <a href="http:/hellolzc.github.io">@hellolzc</a>
 url: "http://vno.onevcat.com"
@@ -31,7 +31,7 @@ paginate_path: "page/:num/"
 
 # Comment
 comment:
-    disqus: vno-jekyll
+    disqus: hellolzc
     # duoshuo: 
     
 # Social
