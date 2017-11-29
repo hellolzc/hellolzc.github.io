@@ -5,8 +5,8 @@
     <description>码农hellolzc的小站.</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Tue, 28 Nov 2017 20:41:27 +0800</pubDate>
-    <lastBuildDate>Tue, 28 Nov 2017 20:41:27 +0800</lastBuildDate>
+    <pubDate>Wed, 29 Nov 2017 08:56:56 +0800</pubDate>
+    <lastBuildDate>Wed, 29 Nov 2017 08:56:56 +0800</lastBuildDate>
     <generator>Jekyll v3.4.0</generator>
     
       <item>
@@ -29,10 +29,329 @@
 &lt;span class=&quot;c1&quot;&gt;#=&amp;gt; prints 'Hi, Tom' to STDOUT.&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
 </description>
-        <pubDate>Tue, 28 Nov 2017 19:48:00 +0800</pubDate>
+        <pubDate>Tue, 28 Nov 2017 00:00:00 +0800</pubDate>
         <link>http://localhost:4000/2017/11/just-a-simple-test/</link>
         <guid isPermaLink="true">http://localhost:4000/2017/11/just-a-simple-test/</guid>
         
+        <category>test</category>
+        
+        <category>jekyll</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>用Jekyll搭建的Github Pages个人博客</title>
+        <description>&lt;p&gt;转载自&lt;a href=&quot;joe-liu.com&quot;&gt;joe-liu&lt;/a&gt;的博客,内容有修改。&lt;/p&gt;
+
+&lt;p&gt;  近半年一直忙于项目开发，不落得空。近期慢慢清闲了，终于有机会可以写写属于自己的技术博客。&lt;/p&gt;
+
+&lt;p&gt;  之前有打算在&lt;a href=&quot;http://blog.csdn.net&quot;&gt;CSDN&lt;/a&gt;、&lt;a href=&quot;http://www.cnblogs.com&quot;&gt;cnblogs&lt;/a&gt;等博客平台上写的，不过个人觉得界面设计、页面效果比较low，不符合我的审美观&amp;lt;(￣▽￣)&amp;gt;。也有考虑过在&lt;a href=&quot;http://www.jianshu.com&quot;&gt;简书&lt;/a&gt;上面写，因为界面看着简约大方上档次的赶脚，平时也看到挺多简书里的技术文章。不过，简书首页写着“一个基于内容分析的社区”，也就是啥啥啥文章都有，不只是技术博客，额，给我感觉在上面写自己的技术博客不是很正宗（&lt;del&gt;No zuo，No die&lt;/del&gt;）。依稀记得之前访问&lt;a href=&quot;http://onevcat.com&quot;&gt;喵神&lt;/a&gt;的博客很有feel，如果能做一个他这样的个人博客网站就好了，于是就有了不拉不拉不拉的一通乱逛、乱转、乱撞，终于整出属于&lt;a href=&quot;http://joe-liu.com&quot;&gt;自己的博客&lt;/a&gt;了，不过在这里要感谢喵神git上的提供的主题&lt;a href=&quot;https://github.com/onevcat/vno-jekyll&quot;&gt;Vno-Jekyll&lt;/a&gt;。&lt;/p&gt;
+
+&lt;p&gt;  好了，其他废话不多说，下面就说一下搭建过程，然后你也可以拥有和我一模一样的博客了。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;达到效果&lt;/strong&gt;：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;1.自定义域名访问技术博客（joe-liu.com）&lt;/li&gt;
+  &lt;li&gt;2.Github二级域名访问博客（joe-liu.github.io）&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;一github-pages&quot;&gt;一、Github Pages&lt;/h3&gt;
+&lt;p&gt;  GitHub Pages 可以为你或者你的项目提供介绍网页，它是由 GitHub 官方托管和发布的。你可以使用 GitHub 提供的页面自动生成器。也可以做个人博客，是个轻量级的博客系统，没有麻烦的配置。使用标记语言如Markdown，不需自己搭建服务器，还可以绑定自己的域名。&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;a href=&quot;https://help.github.com/categories/github-pages-basics/&quot;&gt;Github Pages - 官方配置指南&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&quot;https://help.github.com/categories/customizing-github-pages/&quot;&gt;Github Pages - 自定义页面指南&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&quot;http://wiki.jikexueyuan.com/project/github-pages-basics/&quot;&gt;极客学院翻译 - 中文版本指南&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;二github二级域名创建&quot;&gt;二、Github二级域名创建&lt;/h3&gt;
+&lt;p&gt;  这个步骤比较简单，&lt;a href=&quot;https://pages.github.com&quot;&gt;Github Pages&lt;/a&gt;官网首页就有图文说明。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;1.打开创建代码仓库页面
+&lt;img src=&quot;/assets/2016-04-16-used-jekyll-to-create-my-github-blog/7515e75bjw1f2xvg9vqjfj214w0v0dmt.jpg&quot; alt=&quot;repo1 icon&quot; /&gt;
+  在红框的位置输入-&amp;gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;(你的用户名).github.io&lt;/code&gt;  点击&lt;code class=&quot;highlighter-rouge&quot;&gt;Create repository&lt;/code&gt;。（用户名就是红框左边，这里千万要记住大小写，不然前方有坑等着）&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;2.下载github的&lt;a href=&quot;https://desktop.github.com&quot;&gt;客户端&lt;/a&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;3.将刚刚创建的代码仓库，克隆一份到电脑本地
+&lt;img src=&quot;/assets/2016-04-16-used-jekyll-to-create-my-github-blog/7515e75bjw1f2xw5d4a4aj20m805omya.jpg&quot; alt=&quot;repo2 icon&quot; /&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;4.创建一个简单的Hello World静态页面
+  用终端在目录下创建&lt;code class=&quot;highlighter-rouge&quot;&gt;index.html&lt;/code&gt;文件，输入文件内容：&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-ojb&quot;&gt;&amp;lt;!DOCTYPE html&amp;gt;
+&amp;lt;html&amp;gt;
+&amp;lt;body&amp;gt;
+&amp;lt;h1&amp;gt;Hello World&amp;lt;/h1&amp;gt;
+&amp;lt;p&amp;gt;I'm hosted with GitHub Pages.&amp;lt;/p&amp;gt;
+&amp;lt;/body&amp;gt;
+&amp;lt;/html&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;/assets/2016-04-16-used-jekyll-to-create-my-github-blog/7515e75bjw1f2xwi1alwfj208c03fdfv.jpg&quot; alt=&quot;repo3 icon&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;5.将&lt;code class=&quot;highlighter-rouge&quot;&gt;index.html&lt;/code&gt;文件上传到github上
+&lt;img src=&quot;/assets/2016-04-16-used-jekyll-to-create-my-github-blog/7515e75bjw1f2xwrym2soj21ak0ycgrx.jpg&quot; alt=&quot;repo3 icon&quot; /&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;6.浏览器输入&lt;code class=&quot;highlighter-rouge&quot;&gt;(你的用户名).github.io&lt;/code&gt;，就初步看到效果啦
+&lt;img src=&quot;/assets/2016-04-16-used-jekyll-to-create-my-github-blog/7515e75bjw1f2xwmlhawmj20qu0a4wfe.jpg&quot; alt=&quot;repo4 icon&quot; /&gt;&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;三jekyll本地环境搭建待完善&quot;&gt;三、Jekyll本地环境搭建（待完善）&lt;/h3&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;a href=&quot;http://jekyllcn.com&quot;&gt;Jekyll中文指导手册&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;  GitHub Pages为了提供对HTML内容的支持，选择了&lt;a href=&quot;https://github.com/jekyll/jekyll&quot;&gt;Jekyll&lt;/a&gt;作为模板系统，Jekyll是一个强大的静态模板系统，作为个人博客使用，基本上可以满足要求，也能保持管理的方便。&lt;/p&gt;
+
+&lt;p&gt;  Jekyll是一种简单的、适用于博客的、静态网站生成引擎。它使用一个模板目录作为网站布局的基础框架，支持Markdown、Textile等标记语言的解析，提供了模板、变量、插件等功能，最终生成一个完整的静态Web站点。说白了就是，只要安装Jekyll的规范和结构，不用写html，就可以生成网站。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Jekyll基本结构&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;  Jekyll的核心其实就是一个文本的转换引擎，用你最喜欢的标记语言写文档，可以是Markdown、Textile或者HTML等等，再通过layout将文档拼装起来，根据你设置的URL规则来展现，这些都是通过严格的配置文件来定义，最终的产出就是web页面。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;|-- _config.yml
+|-- _includes
+|-- _layouts
+|   |-- default.html
+|    -- post.html
+|-- _posts
+|   |-- 2007-10-29-why-every-programmer-should-play-nethack.textile
+|    -- 2009-04-26-barcamp-boston-4-roundup.textile
+|-- _site
+ -- index.html
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;将主题下载到本地&lt;a href=&quot;https://github.com/onevcat/vno-jekyll&quot;&gt;Vno-Jekyll&lt;/a&gt;，解压到刚刚的代码仓库目录下，可以把文件夹里的文件都删了。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;安装本地&lt;code class=&quot;highlighter-rouge&quot;&gt;Jekyll&lt;/code&gt;环境步骤：&lt;/p&gt;
+
+    &lt;p&gt;1.安装&lt;code class=&quot;highlighter-rouge&quot;&gt;ruby&lt;/code&gt;（去百度一下，有很多教程）&lt;/p&gt;
+
+    &lt;p&gt;2.打开终端，执行&lt;code class=&quot;highlighter-rouge&quot;&gt;sudo gem install jekyll&lt;/code&gt;（用vpn比较快点）&lt;/p&gt;
+
+    &lt;p&gt;如果是在淘宝的镜像，可能找不到&lt;code class=&quot;highlighter-rouge&quot;&gt;Jekyll&lt;/code&gt;&lt;/p&gt;
+
+    &lt;pre&gt;&lt;code class=&quot;language-obj&quot;&gt;  ERROR:  Could not find a valid gem 'jekyll' (&amp;gt;= 0), here is why:
+        Unable to download data from http://ruby.taobao.org/ - bad response Not Found 404 (http://ruby.taobao.org/latest_specs.4.8.gz)
+&lt;/code&gt;&lt;/pre&gt;
+
+    &lt;p&gt;更换镜像：&lt;br /&gt;
+  &lt;code class=&quot;highlighter-rouge&quot;&gt;gem source -r https://ruby.taobao.org/&lt;/code&gt;  (移除淘宝镜像)&lt;br /&gt;
+  &lt;code class=&quot;highlighter-rouge&quot;&gt;gem source -a https://rubygems.org/&lt;/code&gt;  (添加新镜像)&lt;/p&gt;
+
+    &lt;p&gt;查看当前镜像：&lt;code class=&quot;highlighter-rouge&quot;&gt;gem source&lt;/code&gt;，出现下面输出代表更换成功&lt;/p&gt;
+
+    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  *** CURRENT SOURCES ***
+  https://rubygems.org/
+&lt;/code&gt;&lt;/pre&gt;
+    &lt;/div&gt;
+
+    &lt;p&gt;再次执行&lt;code class=&quot;highlighter-rouge&quot;&gt;sudo gem install jekyll&lt;/code&gt;，输入电脑密码，等待安装一会。&lt;/p&gt;
+
+    &lt;p&gt;3.进入到你刚刚下载的Jekyll主体文件目录&lt;code class=&quot;highlighter-rouge&quot;&gt;cd /Users/Joe/Documents/git/Joe-Liuyi.github.io&lt;/code&gt;&lt;/p&gt;
+
+    &lt;p&gt;4.执行&lt;code class=&quot;highlighter-rouge&quot;&gt;bundle install&lt;/code&gt;
+  如果出现提示：&lt;/p&gt;
+
+    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  -bash: bundle: command not found
+&lt;/code&gt;&lt;/pre&gt;
+    &lt;/div&gt;
+    &lt;p&gt;就先安装bundle（执行&lt;code class=&quot;highlighter-rouge&quot;&gt;sudo gem install bundle&lt;/code&gt;），再执行此命令，见一堆绿色打印的时候说明执行命令成功。&lt;/p&gt;
+
+    &lt;p&gt;5.开启Jekyll环境&lt;code class=&quot;highlighter-rouge&quot;&gt;bundle exec jekyll serve&lt;/code&gt;，看见下面输出代表开启成功。&lt;/p&gt;
+
+    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  liuyideMacBook-Pro:Joe-Liuyi.github.io Joe$ bundle exec jekyll serve
+Configuration file: /Users/Joe/Documents/git/Joe-Liuyi.github.io/_config.yml
+          Source: /Users/Joe/Documents/git/Joe-Liuyi.github.io
+     Destination: /Users/Joe/Documents/git/Joe-Liuyi.github.io/_site
+ Incremental build: disabled. Enable with --incremental
+    Generating... 
+                  done in 0.528 seconds.
+ Auto-regeneration: enabled for '/Users/Joe/Documents/git/Joe-Liuyi.github.io'
+Configuration file: /Users/Joe/Documents/git/Joe-Liuyi.github.io/_config.yml
+  Server address: http://127.0.0.1:4000/
+Server running... press ctrl-c to stop.
+&lt;/code&gt;&lt;/pre&gt;
+    &lt;/div&gt;
+
+    &lt;p&gt;6.在浏览器输入&lt;code class=&quot;highlighter-rouge&quot;&gt;http://127.0.0.1:4000/&lt;/code&gt;，即可看见刚刚从网上下载的&lt;code class=&quot;highlighter-rouge&quot;&gt;vno-jekyll&lt;/code&gt;主体技术博客了&lt;/p&gt;
+
+    &lt;p&gt;7.用git电脑终端将这些代码都上传到git代码仓库。浏览器输入&lt;code class=&quot;highlighter-rouge&quot;&gt;(你的用户名).github.io&lt;/code&gt;，就可以看到你的成效了。&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;四绑定个人域名&quot;&gt;四、绑定个人域名&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;1.创建CNAME文件&lt;/strong&gt;&lt;/p&gt;
+
+    &lt;blockquote&gt;
+      &lt;p&gt;在仓库根目录的&lt;code class=&quot;highlighter-rouge&quot;&gt;master&lt;/code&gt;分支上创建文件&lt;code class=&quot;highlighter-rouge&quot;&gt;CNAME&lt;/code&gt;，不带后缀。并将不带协议名的裸域名写进去(&lt;code class=&quot;highlighter-rouge&quot;&gt;joe-liu.com&lt;/code&gt;，而不是&lt;code class=&quot;highlighter-rouge&quot;&gt;http://joe-liu.com/&lt;/code&gt;)&lt;br /&gt;
+如果看到绿色打钩，说明配置文件成功了。&lt;br /&gt;
+  这一步也可以参考&lt;a href=&quot;https://help.github.com/articles/setting-up-your-pages-site-repository/&quot;&gt;官方文档&lt;/a&gt;&lt;/p&gt;
+    &lt;/blockquote&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/2016-04-16-used-jekyll-to-create-my-github-blog/7515e75bgw1f2yidhzl6aj205007njro.jpg&quot; alt=&quot;cname1 icon&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/2016-04-16-used-jekyll-to-create-my-github-blog/7515e75bgw1f2yidihvu6j20go0bujrz.jpg&quot; alt=&quot;cname2 icon&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/2016-04-16-used-jekyll-to-create-my-github-blog/7515e75bjw1f2yj0czpekj20dw02s0sw.jpg&quot; alt=&quot;cname3 icon&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/2016-04-16-used-jekyll-to-create-my-github-blog/7515e75bjw1f2yj3rkqgxj20go06xdgn.jpg&quot; alt=&quot;cname4 icon&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;    好吧， 你直接在代码仓库里点击&lt;code class=&quot;highlighter-rouge&quot;&gt;New file&lt;/code&gt;也很快&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/2016-04-16-used-jekyll-to-create-my-github-blog/7515e75bjw1f2yjq1j0k9j20b405t3z5.jpg&quot; alt=&quot;cname4 icon&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;2.购买域名&lt;/strong&gt;&lt;/p&gt;
+
+    &lt;blockquote&gt;
+      &lt;p&gt;我是在&lt;a href=&quot;https://wanwang.aliyun.com&quot;&gt;万网&lt;/a&gt;上购买的域名，域名不一定要和github用户名一样。&lt;/p&gt;
+    &lt;/blockquote&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;3.添加A记录&lt;/strong&gt;&lt;/p&gt;
+
+    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;gt; 购买完，进入`管理控制台` -&amp;gt; `云解析` -&amp;gt; `解析` -&amp;gt; `添加解析` -&amp;gt; 添加`A`记录 :     `192.30.252.153`     `192.30.252.154`
+&lt;/code&gt;&lt;/pre&gt;
+    &lt;/div&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/2016-04-16-used-jekyll-to-create-my-github-blog/7515e75bjw1f2yim1c737j21d6068768.jpg&quot; alt=&quot;domain icon&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;4.等待DNS解析生效&lt;/p&gt;
+
+    &lt;blockquote&gt;
+      &lt;p&gt;大概十分钟内吧，奇葩情况可能要0-72小时都有可能。&lt;br /&gt;
+  可以在终端输入：&lt;code class=&quot;highlighter-rouge&quot;&gt;dig joe-liu.com +nostats +nocomments +nocmd&lt;/code&gt;，查看解析生效没。如果看到下面两条记录说明就解析好了。快输入你的域名看看效果吧。&lt;/p&gt;
+    &lt;/blockquote&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;liuyideMacBook-Pro:~ Joe$ dig joe-liu.com +nostats +nocomments +nocmd
+; &amp;lt;&amp;lt;&amp;gt;&amp;gt; DiG 9.8.3-P1 &amp;lt;&amp;lt;&amp;gt;&amp;gt; joe-liu.com +nostats +nocomments +nocmd
+;; global options: +cmd
+;joe-liu.com.			IN	A
+joe-liu.com.		355	IN	A	192.30.252.153
+joe-liu.com.		355	IN	A	192.30.252.154
+joe-liu.com.		20	IN	NS	f1g1ns2.dnspod.net.
+joe-liu.com.		20	IN	NS	f1g1ns1.dnspod.net.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h3 id=&quot;五评论功能设置&quot;&gt;五、评论功能设置&lt;/h3&gt;
+&lt;ol&gt;
+  &lt;li&gt;登录&lt;a href=&quot;https://disqus.com&quot;&gt;Disqus&lt;/a&gt;网站注册一个账号（开vpn比较快点）&lt;/li&gt;
+  &lt;li&gt;点击Setting&lt;code class=&quot;highlighter-rouge&quot;&gt;图标&lt;/code&gt;，选择&lt;code class=&quot;highlighter-rouge&quot;&gt;Add disqus to site&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;点击&lt;code class=&quot;highlighter-rouge&quot;&gt;Start Using Engage&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;设置自己的Disqus的URL
+&lt;img src=&quot;/assets/2016-04-16-used-jekyll-to-create-my-github-blog/7515e75bjw1f2zxj6kl8cj20go0a4756.jpg&quot; alt=&quot;disqus icon&quot; /&gt;&lt;/li&gt;
+  &lt;li&gt;设置根目录下&lt;code class=&quot;highlighter-rouge&quot;&gt;_config.yml&lt;/code&gt;文件的disqus的URL&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-obj&quot;&gt;# Comment
+comment:
+    disqus: joeliu
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&quot;六主题细节修改&quot;&gt;六、主题细节修改&lt;/h3&gt;
+&lt;p&gt;  一切顺利的话，你讲看到下面这个界面。接下来就将网站信息都改成自己的吧。
+&lt;img src=&quot;/assets/2016-04-16-used-jekyll-to-create-my-github-blog/7515e75bjw1f2yk2dvkomj20jg09xmz0.jpg&quot; alt=&quot;background icon&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;1.修改个人信息&lt;/strong&gt;&lt;br /&gt;
+  博客名、描述、跳转链接的修改的主要文件路径是在根目录下的文件：&lt;code class=&quot;highlighter-rouge&quot;&gt;_config.yml&lt;/code&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;2.修改背景图片&lt;/strong&gt;&lt;br /&gt;
+  头像和背景存放路径：&lt;code class=&quot;highlighter-rouge&quot;&gt;代码仓库根目录&lt;/code&gt;-&amp;gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;assets&lt;/code&gt;-&amp;gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;image&lt;/code&gt;，直接替换文件就好了，不过要保持文件名一样。
+&lt;img src=&quot;/assets/2016-04-16-used-jekyll-to-create-my-github-blog/7515e75bjw1f2yk5epypnj20m807ojsm.jpg&quot; alt=&quot;guide icon&quot; /&gt;&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;七写文章&quot;&gt;七、写文章&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;1.存放文章位置&lt;/strong&gt;
+&lt;img src=&quot;/assets/2016-04-16-used-jekyll-to-create-my-github-blog/7515e75bjw1f2ydn81e45j212a0jq0wr.jpg&quot; alt=&quot;article icon&quot; /&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;  用Jekyll写博客，一篇文章就是一个文件，所有需要发表的文章都要放在&lt;code class=&quot;highlighter-rouge&quot;&gt;_posts&lt;/code&gt;文件夹里。文件的命名要按&lt;code class=&quot;highlighter-rouge&quot;&gt;YYYY-MM-DD-文章标题.markdown&lt;/code&gt;这种格式来，后缀使用&lt;code class=&quot;highlighter-rouge&quot;&gt;.md&lt;/code&gt;也可以。文件名一旦确定下来，就不要轻易更改，因为Jekyll结合的评论功能，会根据文件名去查找这篇文章的评论内容。同一篇文章只是更改了文件名，如下：
+&lt;img src=&quot;/assets/2016-04-16-used-jekyll-to-create-my-github-blog/7515e75bjw1f2yecz7lggj20xc0eqq78.jpg&quot; alt=&quot;article icon&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;2.写文章工具&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;  推荐用&lt;a href=&quot;http://25.io/mou/&quot;&gt;Mou&lt;/a&gt;吧&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;3.书写格式&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;  在文章的开头，我们需要先设置头信息。头信息需要根据&lt;a href=&quot;http://yaml.org/&quot;&gt;YAML&lt;/a&gt;的格式写在两行三虚线之间。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-obj&quot;&gt;---
+layout: post
+title: 这个是标题
+date: 2016-04-16 11:11:11.000000000 +09:00
+tags: Jekyll Github
+---
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;layout&lt;/code&gt;：指文章布局的类型，需要使用指定的模版文件，模版文件放在&lt;code class=&quot;highlighter-rouge&quot;&gt;_layouts&lt;/code&gt;目录下，暂时用&lt;code class=&quot;highlighter-rouge&quot;&gt;post.html&lt;/code&gt;。&lt;code class=&quot;highlighter-rouge&quot;&gt;page.html&lt;/code&gt;模板比&lt;code class=&quot;highlighter-rouge&quot;&gt;post.html&lt;/code&gt;模板少了&lt;code class=&quot;highlighter-rouge&quot;&gt;更早的文章&lt;/code&gt;和&lt;code class=&quot;highlighter-rouge&quot;&gt;评论模块&lt;/code&gt;。有能力的也可以自己写一个文章页面的布局模板文件。&lt;br /&gt;
+&lt;code class=&quot;highlighter-rouge&quot;&gt;title&lt;/code&gt;：文章的标题。&lt;br /&gt;
+&lt;code class=&quot;highlighter-rouge&quot;&gt;date&lt;/code&gt;：发布文章的时间。（后面的一串零零零好像不能省）&lt;br /&gt;
+&lt;code class=&quot;highlighter-rouge&quot;&gt;tags&lt;/code&gt;：标签，一篇文章可以设置多个标签，使用空格分割。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;  基本上一篇文章只要用到以上一些信息就可以了，当然还有其它的变量可以设置，具体用法可以在&lt;a href=&quot;http://jekyllrb.com/docs/frontmatter/&quot;&gt;Jekyll网站&lt;/a&gt;上查看。&lt;/p&gt;
+
+&lt;p&gt;  终于可以开始写文章了，一劳永逸，以后再也不用关心那些破事了，将心思放在写文章上。&lt;/p&gt;
+
+&lt;p&gt;  为了写出漂亮排版的文章，需要多注意下Markdown的语法说明，第一次运行&lt;code class=&quot;highlighter-rouge&quot;&gt;Mou&lt;/code&gt;软件的时候，会有弹出使用语法说明，如果不小心关了，也可以在软件的菜单栏里找到 &lt;code class=&quot;highlighter-rouge&quot;&gt;Help -&amp;gt; Mou Help&lt;/code&gt; :
+&lt;img src=&quot;/assets/2016-04-16-used-jekyll-to-create-my-github-blog/7515e75bjw1f2yfgbcdwej20m80ettby.jpg&quot; alt=&quot;mou icon&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;  在写文章的时候，在终端执行&lt;code class=&quot;highlighter-rouge&quot;&gt;bundle exec jekyll serve&lt;/code&gt;，开启Jekyll本地环境，可以一边写博文，一边刷新&lt;code class=&quot;highlighter-rouge&quot;&gt;http://127.0.0.1:4000/&lt;/code&gt;地址查看实时效果。写完提交git，就完事啦。&lt;/p&gt;
+
+</description>
+        <pubDate>Sat, 16 Apr 2016 10:11:11 +0800</pubDate>
+        <link>http://localhost:4000/2016/04/used-jekyll-to-create-my-github-blog/</link>
+        <guid isPermaLink="true">http://localhost:4000/2016/04/used-jekyll-to-create-my-github-blog/</guid>
+        
+        <category>Jekyll&amp;emsp;Github</category>
+        
+        
+        <category>Jekyll</category>
+        
+        <category>Github</category>
         
       </item>
     

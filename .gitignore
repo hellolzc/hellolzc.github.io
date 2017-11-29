@@ -1,2 +1,4 @@
 # auto generate
 _site/
+.jekyll-metadata
+

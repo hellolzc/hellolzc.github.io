@@ -1,7 +1,7 @@
 ---
 layout: post
 title: a simple test
-date: 2017-11-28 19:48:00.000000000 +08:00
+tags: test jekyll
 ---
 
 # head 1
