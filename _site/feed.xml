@@ -5,8 +5,8 @@
     <description>码农hellolzc的小站.</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Wed, 29 Nov 2017 08:56:56 +0800</pubDate>
-    <lastBuildDate>Wed, 29 Nov 2017 08:56:56 +0800</lastBuildDate>
+    <pubDate>Wed, 29 Nov 2017 12:53:07 +0800</pubDate>
+    <lastBuildDate>Wed, 29 Nov 2017 12:53:07 +0800</lastBuildDate>
     <generator>Jekyll v3.4.0</generator>
     
       <item>
@@ -37,6 +37,697 @@
         
         <category>jekyll</category>
         
+        
+      </item>
+    
+      <item>
+        <title>搭建 Postfix、Dovecot 邮件服务</title>
+        <description>&lt;!---
+搭建 Postfix、Dovecot 邮件服务
+--&gt;
+
+&lt;p&gt;说明：&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;参考资料 腾讯云开发者实验室 https://www.qcloud.com/developer/labs/lab/10096&lt;/li&gt;
+  &lt;li&gt;实验使用的系统是centos 7.2，如果你使用的是其他版本，请自行替换修改系统服务的相关命令。
+在centos 6中启动服务命令是&lt;code class=&quot;highlighter-rouge&quot;&gt;service [服务] start&lt;/code&gt;，设置开机启动的命令是&lt;code class=&quot;highlighter-rouge&quot;&gt;chkconfig [服务] on&lt;/code&gt;。&lt;/li&gt;
+  &lt;li&gt;最近腾讯云封了云主机发送邮件端口 T_T , 所以推荐用腾讯的域名邮箱，可以绑定到你的私人邮箱上。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;1准备域名&quot;&gt;1.准备域名&lt;/h2&gt;
+
+&lt;h3 id=&quot;域名注册&quot;&gt;域名注册&lt;/h3&gt;
+&lt;p&gt;如果您还没有域名，可以在腾讯云、阿里云上选购，或在淘宝上购买。&lt;/p&gt;
+
+&lt;h3 id=&quot;域名解析&quot;&gt;域名解析&lt;/h3&gt;
+&lt;p&gt;域名购买完成后, 需要将域名解析到实验云主机上，
+在腾讯云购买的域名，可以到控制台添加解析记录。
+完成该实验共需要添加两条记录：&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;A 记录
+
+记录类型：A
+主机记录：@
+记录值：你的主机IP
+
+MX 记录
+
+记录类型：A
+主机记录：@
+记录值：yourdomain.com（替换为自己域名）
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;h3 id=&quot;生效检查&quot;&gt;生效检查&lt;/h3&gt;
+&lt;p&gt;域名设置解析后需要过一段时间才会生效，通过 ping 命令检查域名是否生效
+，如：&lt;/p&gt;
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ping yourdomain.com
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;如果 ping 命令返回的信息中含有你设置的解析的 IP 地址，说明解析成功。
+（使用 ctrl + c 停止）&lt;/p&gt;
+&lt;h4 id=&quot;检查-mx-记录&quot;&gt;检查 MX 记录&lt;/h4&gt;
+
+&lt;p&gt;替换下面命令中的 yourdomain.com 为您自己的注册的域名：
+nslookup -q=mx yourdomain.com
+如果 nslookup 命令返回的信息中含有你设置的域名的记录值，说明解析成功。&lt;/p&gt;
+
+&lt;h2 id=&quot;2实验之前&quot;&gt;2.实验之前&lt;/h2&gt;
+
+&lt;h3 id=&quot;postfixdovecot-简介&quot;&gt;Postfix、Dovecot 简介&lt;/h3&gt;
+&lt;h4 id=&quot;postfix&quot;&gt;Postfix&lt;/h4&gt;
+&lt;p&gt;Postfix 是一个标准的 MTA「Mail Transfer Agent」服务器，它负责通过 SMTP 协议管理发送到本机的邮件以及由本机发向外界的邮件。&lt;/p&gt;
+&lt;h4 id=&quot;dovecot&quot;&gt;Dovecot&lt;/h4&gt;
+&lt;p&gt;Dovecot 是一个优秀的 IMAP/POP 服务器用以接收外界发送到本机的邮件。
+Postfix、Dovecot 安装
+在 CentOS 7 上，我们可以直接使用 yum 进行下载安装：&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;yum -y install postfix dovecot
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;h2 id=&quot;3postfix&quot;&gt;3.Postfix&lt;/h2&gt;
+
+&lt;h3 id=&quot;配置-postfix&quot;&gt;配置 Postfix&lt;/h3&gt;
+&lt;p&gt;有关教程中配置参数的具体含义，请参照 Postfix 配置文档。&lt;/p&gt;
+&lt;h4 id=&quot;配置&quot;&gt;配置&lt;/h4&gt;
+&lt;p&gt;在终端中输入以下命令以修改 Postfix 相关配置，请记得将 yourdomain.com 替换为你自己的域名：&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;postconf -e 'myhostname = server.yourdomain.com'
+postconf -e 'mydestination = localhost, localhost.localdomain'
+postconf -e 'myorigin = $mydomain'
+postconf -e 'mynetworks = 127.0.0.0/8'
+postconf -e 'inet_interfaces = all'
+postconf -e 'inet_protocols = all'
+postconf -e 'mydestination = $myhostname, localhost.$mydomain, localhost, $mydomain'
+postconf -e 'home_mailbox = Maildir/'
+postconf -e 'smtpd_sasl_type = dovecot'
+postconf -e 'smtpd_sasl_path = private/auth'
+postconf -e 'smtpd_sasl_auth_enable = yes'
+postconf -e 'broken_sasl_auth_clients = yes'
+postconf -e 'smtpd_sasl_authenticated_header = yes'
+postconf -e 'smtpd_recipient_restrictions = permit_mynetworks, permit_sasl_authenticated, reject_unauth_destination'
+postconf -e 'smtpd_use_tls = yes'
+postconf -e 'smtpd_tls_cert_file = /etc/pki/dovecot/certs/dovecot.pem'
+postconf -e 'smtpd_tls_key_file = /etc/pki/dovecot/private/dovecot.pem'
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;配置中 Postfix 使用 sasl 和 tls 来完成身份认证和传输信息加密。
+试验中使用了 Dovecot 默认的 ssl 证书和私钥，如果你需要修改为自己的，请替换最后两行配置的路径。&lt;/p&gt;
+&lt;h3 id=&quot;配置-smtps&quot;&gt;配置 smtps&lt;/h3&gt;
+&lt;p&gt;部分邮件客户端依赖于使用 465 端口提供加密连接，所以我们修改配置，允许 Postfix 使用 465 端口发送邮件。
+打开 /etc/postfix/master.cf 文件，将如下两行前的 # 去除：&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;smtps inet n - n - - smtpd
+-o smtpd_tls_wrappermode=yes
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;然后保存文件。&lt;/p&gt;
+&lt;h4 id=&quot;启动&quot;&gt;启动&lt;/h4&gt;
+&lt;p&gt;使用以下命令，将 Postfix 设为自动启动并首次启动该服务：&lt;/p&gt;
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;systemctl &lt;span class=&quot;nb&quot;&gt;enable &lt;/span&gt;postfix.service
+systemctl start  postfix.service
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;Postfix 日志
+Postfix 系统的日志文件在系统的这个目录下的 /var/log/maillog 文件，此文件记录了 Postfix 服务器的运行状态信息。&lt;/p&gt;
+
+&lt;h2 id=&quot;4dovecot&quot;&gt;4.Dovecot&lt;/h2&gt;
+
+&lt;h3 id=&quot;配置-dovecot&quot;&gt;配置 Dovecot&lt;/h3&gt;
+&lt;h4 id=&quot;修改-dovecotconf&quot;&gt;修改 dovecot.conf&lt;/h4&gt;
+&lt;p&gt;打开 /etc/dovecot/dovecot.conf 文件，在最下方加入以下配置：&lt;/p&gt;
+
+&lt;p&gt;dovecot.conf&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ssl_cert = &amp;lt;/etc/pki/dovecot/certs/dovecot.pem
+ssl_key = &amp;lt;/etc/pki/dovecot/private/dovecot.pem
+
+protocols = imap pop3 lmtp
+listen = *
+mail_location = Maildir:~/Maildir
+disable_plaintext_auth = no
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;如果前面你修改为了自己的 ssl 证书和私钥，请替换开始两行配置的路径。
+然后保存文件。&lt;/p&gt;
+
+&lt;h4 id=&quot;修改-10-masterconf&quot;&gt;修改 10-master.conf&lt;/h4&gt;
+&lt;p&gt;打开 /etc/dovecot/conf.d/10-master.conf 文件，在最下方加入以下配置：
+找到 service auth 部分，将以下行前面的 # 去除：&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;unix_listener /var/spool/postfix/private/auth {  
+       mode = 0666  
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;然后保存文件。&lt;/p&gt;
+
+&lt;h4 id=&quot;启动-dovecot&quot;&gt;启动 Dovecot&lt;/h4&gt;
+&lt;p&gt;使用以下命令，将 Dovecot 设为自动启动并首次启动该服务：&lt;/p&gt;
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;systemctl &lt;span class=&quot;nb&quot;&gt;enable &lt;/span&gt;dovecot.service
+systemctl start  dovecot.service
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;查看 /var/log/maillog 文件，查看服务是否成功启动。
+如成功启动，日志里应包含如下信息：&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Jun 26 12:00:28 localhost postfix/postfix-script[28338]: starting the Postfix mail system
+Jun 26 12:00:29 localhost postfix/master[28340]: daemon started -- version 2.10.1, configuration /etc/postfix
+Jun 26 12:28:40 localhost dovecot: master: Dovecot v2.2.10 starting up for imap, pop3, lmtp (core dumps disabled)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;h2 id=&quot;5创建账户&quot;&gt;5.创建账户&lt;/h2&gt;
+
+&lt;p&gt;添加用户
+在终端中使用 useradd 命令添加用户：&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;useradd test
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;使用 passwd 命令设置对应用户密码：&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;passwd test
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;h2 id=&quot;6测试&quot;&gt;6.测试&lt;/h2&gt;
+
+&lt;p&gt;如测试中遇到异常，请查看 maillog 日志文件中的错误信息。&lt;/p&gt;
+
+&lt;h3 id=&quot;服务器端发送测试&quot;&gt;服务器端发送测试&lt;/h3&gt;
+&lt;p&gt;使用 su 命令切换用户：&lt;/p&gt;
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    su &lt;span class=&quot;nb&quot;&gt;test&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;我们可以使用 mail 命令发送邮件，将 xxxx@xxx.com 替换为你的其他邮箱。&lt;/p&gt;
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Mail Content&quot;&lt;/span&gt; | mail -s &lt;span class=&quot;s2&quot;&gt;&quot;Mail Subject&quot;&lt;/span&gt; xxxx@xxx.com
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;然后可以前往你的接收方邮箱查收。&lt;/p&gt;
+
+&lt;h3 id=&quot;邮件客户端&quot;&gt;邮件客户端&lt;/h3&gt;
+&lt;p&gt;你可以将该邮箱账户添加至邮件客户端使用，推荐使用 Foxmail 客户端。
+可以参考以下配置进行设置：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    服务器类型：`POP3`
+    邮箱账户：  `test@yourdomain.com`
+
+    收件(POP3)服务器：  `yourdomain.com`
+    端口：              `995`
+    安全连接(SSL)：     `是`
+    用户名：            `test`
+    密码：              `test用户密码`
+
+    发件(SMTP)服务器：  `yourdomain.com`
+    端口：              `465`
+    安全连接(SSL)：     `是`
+    用户名：            `test`
+    密码：              `test用户密码`
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;然后就可以使用邮件客户端通过该账户收发邮件了。
+（该配置在某些邮件客户端下可能因为使用了通用证书而出现使用异常）&lt;/p&gt;
+</description>
+        <pubDate>Tue, 15 Aug 2017 11:11:11 +0800</pubDate>
+        <link>http://localhost:4000/2017/08/%E6%90%AD%E5%BB%BAPostfix&Dovecot%E9%82%AE%E4%BB%B6%E6%9C%8D%E5%8A%A1/</link>
+        <guid isPermaLink="true">http://localhost:4000/2017/08/%E6%90%AD%E5%BB%BAPostfix&Dovecot%E9%82%AE%E4%BB%B6%E6%9C%8D%E5%8A%A1/</guid>
+        
+        <category>email</category>
+        
+        <category>linux</category>
+        
+        
+        <category>linux</category>
+        
+      </item>
+    
+      <item>
+        <title>域名注册解析与SSL证书</title>
+        <description>&lt;!---
+# 体验域名注册解析与SSL证书
+--&gt;
+
+&lt;p&gt;说明：&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;参考资料 腾讯云开发者实验室 https://www.qcloud.com/developer/labs/&lt;/li&gt;
+  &lt;li&gt;实验使用的系统是centos 7.2，如果你使用的是其他版本，请自行替换修改系统服务的相关命令。
+在centos 6中启动服务命令是&lt;code class=&quot;highlighter-rouge&quot;&gt;service [服务] start&lt;/code&gt;，设置开机启动的命令是&lt;code class=&quot;highlighter-rouge&quot;&gt;chkconfig [服务] on&lt;/code&gt;。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;1准备域名并解析&quot;&gt;1.准备域名并解析&lt;/h2&gt;
+
+&lt;h3 id=&quot;域名注册&quot;&gt;域名注册&lt;/h3&gt;
+&lt;p&gt;如果您还没有域名，可以在腾讯云上选购。&lt;/p&gt;
+
+&lt;h3 id=&quot;域名解析&quot;&gt;域名解析&lt;/h3&gt;
+&lt;p&gt;域名购买完成后, 需要将域名解析到实验云主机上，在腾讯云购买的域名，可以到控制台添加解析记录.
+域名设置解析后需要过一段时间才会生效，通过 ping 命令检查域名是否生效，如：&lt;/p&gt;
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    ping www.yourdomain.com
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;如果 ping 命令返回的信息中含有你设置的解析的 IP 地址，说明解析成功。&lt;/p&gt;
+
+&lt;h2 id=&quot;2安装-web-服务&quot;&gt;2.安装 Web 服务&lt;/h2&gt;
+
+&lt;h2 id=&quot;安装-nginx&quot;&gt;安装 Nginx&lt;/h2&gt;
+&lt;p&gt;使用 yum 命令安装 Nginx&lt;/p&gt;
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    yum install -y nginx
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;修改完成后，启动 Nginx：&lt;/p&gt;
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    nginx
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;设置 Nginx 开机启动：&lt;/p&gt;
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    systemctl &lt;span class=&quot;nb&quot;&gt;enable &lt;/span&gt;nginx.service
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;此时，可访问实验机器外网 HTTP 服务（http://119.28.67.24）来确认是否已经安装成功。
+在 /usr/share/nginx/html 目录下添加 hello.html 文件并保存，内容如下：&lt;/p&gt;
+
+&lt;p&gt;hello.html&lt;/p&gt;
+&lt;div class=&quot;language-html highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;h3&amp;gt;&lt;/span&gt;Hello, World!&lt;span class=&quot;nt&quot;&gt;&amp;lt;/h3&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;此时，访问 http://119.28.67.24/hello.html 可浏览到我们刚刚创建的 hello.html 页面了&lt;/p&gt;
+
+&lt;h2 id=&quot;3配置-ssl-证书&quot;&gt;3.配置 SSL 证书&lt;/h2&gt;
+
+&lt;h3 id=&quot;申请-ssl-证书&quot;&gt;申请 SSL 证书&lt;/h3&gt;
+&lt;p&gt;腾讯云提供了 SSL 证书的免费申请。审批通过后，可以到 SSL 控制台下载您的证书文件&lt;/p&gt;
+
+&lt;h3 id=&quot;将证书文件上传到服务器&quot;&gt;将证书文件上传到服务器&lt;/h3&gt;
+&lt;p&gt;将从腾讯云上下载的压缩包解压，里面包含 Apache， IIS, Nginx, Tomcat 文件夹，分别对应不同的部署方式。我们这里选择 Nginx 的部署方式
+将 Nginx 文件夹下的两个文件上传到此服务器 /etc/nginx 目录下&lt;/p&gt;
+
+&lt;h2 id=&quot;4编辑-nginx-配置文件&quot;&gt;4.编辑 Nginx 配置文件&lt;/h2&gt;
+&lt;p&gt;编辑 /etc/nginx/conf.d/ssl.conf 文件 ，配置示例如下：
+ssl.conf&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;server {
+        listen 443;
+        server_name www.domain.com; # 改为绑定证书的域名
+        ssl on;
+        ssl_certificate 1_www.domain.com_bundle.crt; # 改为自己申请得到的 crt 文件的名称
+        ssl_certificate_key 2_www.domain.com.key; # 改为自己申请得到的 key 文件的名称
+        ssl_session_timeout 5m;
+        ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+        ssl_ciphers ECDHE-RSA-AES128-GCM-SHA256:HIGH:!aNULL:!MD5:!RC4:!DHE;
+        ssl_prefer_server_ciphers on;
+
+        location / {
+            root   /usr/share/nginx/html; #站点目录
+            index  index.html index.htm;
+        }
+    }
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;修改配置完成后，重启 nginx 服务&lt;/p&gt;
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;nginx -s reload
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;使用 https 协议访问你的域名， 如 https://www.yourdomain.com/hello.html 检查是否成功，如果地址栏出现绿色带安全字样的锁头标志，说明 SSL 配置已成功&lt;/p&gt;
+</description>
+        <pubDate>Tue, 15 Aug 2017 11:11:11 +0800</pubDate>
+        <link>http://localhost:4000/2017/08/%E5%9F%9F%E5%90%8D%E6%B3%A8%E5%86%8C%E8%A7%A3%E6%9E%90%E4%B8%8ESSL%E8%AF%81%E4%B9%A6/</link>
+        <guid isPermaLink="true">http://localhost:4000/2017/08/%E5%9F%9F%E5%90%8D%E6%B3%A8%E5%86%8C%E8%A7%A3%E6%9E%90%E4%B8%8ESSL%E8%AF%81%E4%B9%A6/</guid>
+        
+        <category>ssl</category>
+        
+        <category>linux</category>
+        
+        
+        <category>linux</category>
+        
+      </item>
+    
+      <item>
+        <title>搭建 WordPress 个人博客</title>
+        <description>&lt;!---
+# 搭建 WordPress 个人博客
+--&gt;
+
+&lt;p&gt;为了搭梯子，买了一个vps，建好后顺便再建一个博客 ：）&lt;/p&gt;
+
+&lt;p&gt;WordPress解决方案功能强大，适合部署在个人主机上。在此将我的折腾过程记录下来，为了将来参考，也提供给同志们参考。&lt;/p&gt;
+
+&lt;p&gt;说明：&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;本博客中使用的操作系统是centos 6.8，如果你使用的是其他版本，请自行替换修改系统服务的相关命令。
+在centos 7中启动服务命令是&lt;code class=&quot;highlighter-rouge&quot;&gt;systemctl start [服务].service&lt;/code&gt;，设置开机启动的命令是&lt;code class=&quot;highlighter-rouge&quot;&gt;systemctl enable [服务].service&lt;/code&gt;。
+在centos 7中安装MySQL的方法请自行查阅相关资料。&lt;/li&gt;
+  &lt;li&gt;博文假定你已经对Linux比较熟悉了，会连接服务器并且会使用vi等编辑器&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;1准备-lnmp-环境&quot;&gt;1.准备 LNMP 环境&lt;/h2&gt;
+&lt;p&gt;LNMP代表的就是：Linux系统下Nginx+MySQL+PHP这种网站服务器架构。
+Linux是一类Unix计算机操作系统的统称，是目前最流行的免费操作系统。代表版本有：debian、centos、ubuntu、fedora等。
+Nginx是一个高性能的HTTP和反向代理服务器，也是一个IMAP/POP3/SMTP代理服务器。
+作为 Web 服务器：Ngin相比 Apache，Nginx 使用更少的资源，支持更多的并发连接，体现更高的效率。
+Mysql是一个小型关系型数据库管理系统。
+PHP是一种在服务器端执行的嵌入HTML文档的脚本语言。
+这四种软件均为免费开源软件，组合到一起，成为一个免费、高效、扩展性强的网站服务系统。&lt;/p&gt;
+
+&lt;p&gt;本博客中使用的操作系统是centos 6.8，如果你使用的是centos 7,建议使用lnmp一键安装包安装，方便快捷。
+如果不用一键安装包，在centos 7中安装MySQL比较麻烦。如果使用一键安装包，请跳到“使用lnmp一键安装包”一节。&lt;/p&gt;
+
+&lt;h3 id=&quot;安装-nginx&quot;&gt;安装 Nginx&lt;/h3&gt;
+&lt;p&gt;使用 yum 安装 Nginx：&lt;/p&gt;
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;yum install nginx -y
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;修改 /etc/nginx/conf.d/default.conf，去除对 IPv6 地址的监听（centos 6 不支持IPv6）
+，可参考下面的示例：
+default.conf&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;#
+# The default server
+#
+
+server {
+    listen       80 default_server;
+    # listen       [::]:80 default_server;
+    server_name  _;
+    root         /usr/share/nginx/html;
+
+    # Load configuration files for the default server block.
+    include /etc/nginx/default.d/*.conf;
+
+    location / {
+    }
+
+    error_page 404 /404.html;
+        location = /40x.html {
+    }
+
+    error_page 500 502 503 504 /50x.html;
+        location = /50x.html {
+    }
+
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;修改完成后，启动 Nginx：&lt;/p&gt;
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;nginx
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;此时，可访问实验机器外网 HTTP 服务（http://你申请的IP）来确认是否已经安装成功。
+将 Nginx 设置为开机自动启动：&lt;/p&gt;
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;chkconfig nginx on
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;h3 id=&quot;安装-mysql&quot;&gt;安装 MySQL&lt;/h3&gt;
+&lt;p&gt;使用 yum 安装 MySQL：&lt;/p&gt;
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;yum install mysql-server -y
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;安装完成后，启动 MySQL 服务：&lt;/p&gt;
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;service mysqld restart
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;设置 MySQL 账户 root 密码：&lt;/p&gt;
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;/usr/bin/mysqladmin -u root password &lt;span class=&quot;s1&quot;&gt;'MyPas$word4Word_Press'&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;将 MySQL 设置为开机自动启动：&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;chkconfig mysqld on
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;h3 id=&quot;安装-php&quot;&gt;安装 PHP&lt;/h3&gt;
+&lt;p&gt;使用 yum 安装 PHP：&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;yum install php-fpm php-mysql -y
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;安装之后，启动 PHP-FPM 进程：&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;service php-fpm start
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;启动之后，可以使用下面的命令查看 PHP-FPM 进程监听哪个端口&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;netstat -nlpt | grep php-fpm
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;把 PHP-FPM 也设置成开机自动启动：&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;chkconfig php-fpm on
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h3 id=&quot;使用lnmp一键安装包&quot;&gt;使用lnmp一键安装包&lt;/h3&gt;
+&lt;p&gt;在centos 7中安装MySQL比较麻烦，如果你使用的是centos 7,建议使用lnmp一键安装包安装，方便快捷。
+如果不用一键安装包，。&lt;/p&gt;
+
+&lt;p&gt;获取lnmp一键安装包链接
+&lt;a href=&quot;https://lnmp.org/download.html&quot;&gt;lnpm官网链接&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;找到下载页面选择最新的复制其链接。
+写该博客时LNMP最新稳定版为1.4&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;最新稳定版本:
+
+LNMP 1.4
+
+下载版：(不含源码安装包文件，仅有安装脚本及配置文件)
+http://soft.vpser.net/lnmp/lnmp1.4.tar.gz  (134KB)
+MD5: c20e6060e100a768c03c3c2a9012adae
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;下载安装&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# 下载，后边的路径直接粘贴就好。
+wget http://soft.vpser.net/lnmp/lnmp1.4.tar.gz
+# 解压
+tar -zxvf lnmp1.4.tar.gz
+# 进入lnmp目录
+cd lnmp1.4
+# 执行install.sh进行安装
+./install.sh
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;LNMP一键安装包会帮你把开机自启动都设置好，所以就不用自己一个一个设置了。&lt;/p&gt;
+
+&lt;h2 id=&quot;2安装并配置-wordpress&quot;&gt;2.安装并配置 WordPress&lt;/h2&gt;
+
+&lt;h3 id=&quot;安装-wordpress&quot;&gt;安装 WordPress&lt;/h3&gt;
+&lt;p&gt;配置好 LNMP 环境后，开始安装 WordPress。&lt;/p&gt;
+
+&lt;p&gt;可以直接从&lt;a href=&quot;https://cn.wordpress.org/&quot;&gt;官网&lt;/a&gt;上下载,它只是一个文件夹而已。&lt;/p&gt;
+
+&lt;p&gt;你也可以使用 yum 来安装 WordPress：&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;yum install wordpress -y
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;安装完成后，就可以在 /usr/share/wordpress 看到 WordPress 的源代码了。&lt;/p&gt;
+
+&lt;h3 id=&quot;配置数据库&quot;&gt;配置数据库&lt;/h3&gt;
+&lt;p&gt;进入 MySQL：&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;mysql -uroot --password='MyPas$word4Word_Press'
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;为 WordPress 创建一个数据库：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-SQL&quot;&gt;CREATE DATABASE wordpress;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;WordPress将所有的博客和配置数据都放在这个数据库中，当升级WordPress时，只要这个数据库不变，博客数据就不会丢失。&lt;/p&gt;
+
+&lt;p&gt;MySQL 部分设置完了，退出 MySQL 环境：&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;exit
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;把上述的 DB 配置同步到 WordPress 的配置文件中，可参考下面的配置：
+wp-config.php&lt;/p&gt;
+&lt;div class=&quot;language-php highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;?php&lt;/span&gt;
+&lt;span class=&quot;sd&quot;&gt;/**
+ * The base configuration for WordPress
+ *
+ * The wp-config.php creation script uses this file during the
+ * installation. You don't have to use the web site, you can
+ * copy this file to &quot;wp-config.php&quot; and fill in the values.
+ *
+ * This file contains the following configurations:
+ *
+ * * MySQL settings
+ * * Secret keys
+ * * Database table prefix
+ * * ABSPATH
+ *
+ * @link https://codex.wordpress.org/Editing_wp-config.php
+ *
+ * @package WordPress
+ */&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;// ** MySQL settings - You can get this info from your web host ** //
+&lt;/span&gt;&lt;span class=&quot;sd&quot;&gt;/** The name of the database for WordPress */&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;define&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'DB_NAME'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'wordpress'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+&lt;span class=&quot;sd&quot;&gt;/** MySQL database username */&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;define&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'DB_USER'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'root'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+&lt;span class=&quot;sd&quot;&gt;/** MySQL database password */&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;define&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'DB_PASSWORD'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'MyPas$word4Word_Press'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+&lt;span class=&quot;sd&quot;&gt;/** MySQL hostname */&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;define&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'DB_HOST'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'localhost'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+&lt;span class=&quot;sd&quot;&gt;/** Database Charset to use in creating database tables. */&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;define&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'DB_CHARSET'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'utf8'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+&lt;span class=&quot;sd&quot;&gt;/** The Database Collate type. Don't change this if in doubt. */&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;define&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'DB_COLLATE'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;''&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+&lt;span class=&quot;sd&quot;&gt;/**#@+
+ * Authentication Unique Keys and Salts.
+ *
+ * Change these to different unique phrases!
+ * You can generate these using the {@link https://api.wordpress.org/secret-key/1.1/salt/ WordPress.org secret-key service}
+ * You can change these at any point in time to invalidate all existing cookies. This will force all users to have to log in again.
+ *
+ * @since 2.6.0
+ */&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;define&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'AUTH_KEY'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;         &lt;span class=&quot;s1&quot;&gt;'put your unique phrase here'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;define&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'SECURE_AUTH_KEY'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;  &lt;span class=&quot;s1&quot;&gt;'put your unique phrase here'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;define&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'LOGGED_IN_KEY'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;    &lt;span class=&quot;s1&quot;&gt;'put your unique phrase here'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;define&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'NONCE_KEY'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;        &lt;span class=&quot;s1&quot;&gt;'put your unique phrase here'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;define&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'AUTH_SALT'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;        &lt;span class=&quot;s1&quot;&gt;'put your unique phrase here'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;define&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'SECURE_AUTH_SALT'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'put your unique phrase here'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;define&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'LOGGED_IN_SALT'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;   &lt;span class=&quot;s1&quot;&gt;'put your unique phrase here'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;define&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'NONCE_SALT'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;       &lt;span class=&quot;s1&quot;&gt;'put your unique phrase here'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+&lt;span class=&quot;sd&quot;&gt;/**#@-*/&lt;/span&gt;
+
+&lt;span class=&quot;sd&quot;&gt;/**
+ * WordPress Database Table prefix.
+ *
+ * You can have multiple installations in one database if you give each
+ * a unique prefix. Only numbers, letters, and underscores please!
+ */&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$table_prefix&lt;/span&gt;  &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'wp_'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;sd&quot;&gt;/**
+ * See http://make.wordpress.org/core/2013/10/25/the-definitive-guide-to-disabling-auto-updates-in-wordpress-3-7
+ */&lt;/span&gt;
+
+&lt;span class=&quot;cm&quot;&gt;/* Disable all file change, as RPM base installation are read-only */&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;define&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'DISALLOW_FILE_MODS'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+&lt;span class=&quot;cm&quot;&gt;/* Disable automatic updater, in case you want to allow
+   above FILE_MODS for plugins, themes, ... */&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;define&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'AUTOMATIC_UPDATER_DISABLED'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+&lt;span class=&quot;cm&quot;&gt;/* Core update is always disabled, WP_AUTO_UPDATE_CORE value is ignore */&lt;/span&gt;
+
+&lt;span class=&quot;sd&quot;&gt;/**
+ * For developers: WordPress debugging mode.
+ *
+ * Change this to true to enable the display of notices during development.
+ * It is strongly recommended that plugin and theme developers use WP_DEBUG
+ * in their development environments.
+ *
+ * For information on other constants that can be used for debugging,
+ * visit the Codex.
+ *
+ * @link https://codex.wordpress.org/Debugging_in_WordPress
+ */&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;define&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'WP_DEBUG'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+&lt;span class=&quot;cm&quot;&gt;/* That's all, stop editing! Happy blogging. */&lt;/span&gt;
+
+&lt;span class=&quot;sd&quot;&gt;/** Absolute path to the WordPress directory. */&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;defined&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'ABSPATH'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;nb&quot;&gt;define&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'ABSPATH'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'/usr/share/wordpress'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+&lt;span class=&quot;sd&quot;&gt;/** Sets up WordPress vars and included files. */&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;require_once&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;ABSPATH&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'wp-settings.php'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;h3 id=&quot;配置-nginx&quot;&gt;配置 Nginx&lt;/h3&gt;
+&lt;p&gt;WordPress 已经安装完毕，我们配置 Nginx 把请求转发给 PHP-FPM 来处理
+首先，重命名默认的配置文件：&lt;/p&gt;
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;cd&lt;/span&gt; /etc/nginx/conf.d/
+mv default.conf default.conf.bak
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;在 /etc/nginx/conf.d 创建 wordpress.conf 配置，参考下面的内容：
+wordpress.conf&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;server {
+    listen 80;
+    root /usr/share/wordpress;
+    location / {
+        index index.php index.html index.htm;
+        try_files $uri $uri/ /index.php index.php;
+    }
+    # pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000
+    location ~ .php$ {
+        fastcgi_pass   127.0.0.1:9000;
+        fastcgi_index  index.php;
+        fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
+        include        fastcgi_params;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;配置后，通知 Nginx 进程重新加载：&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;nginx -s reload
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h2 id=&quot;3准备域名和解析&quot;&gt;3.准备域名和解析&lt;/h2&gt;
+
+&lt;h3 id=&quot;域名注册&quot;&gt;域名注册&lt;/h3&gt;
+&lt;p&gt;如果您还没有域名，可以找你的vps托管商购买，在这里用的是腾讯云。
+你也可以找godaddy等域名商购买。&lt;/p&gt;
+
+&lt;h3 id=&quot;域名解析&quot;&gt;域名解析&lt;/h3&gt;
+&lt;p&gt;域名购买完成后, 需要将域名解析到vps主机上。
+到前往你购买的域名控制台添加解析记录。
+域名设置解析后需要过一段时间才会生效，通过 ping 命令检查域名是否生效，如：&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ping www.yourdomain.com
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;如果 ping 命令返回的信息中含有你设置的解析的 IP 地址，说明解析成功。&lt;/p&gt;
+
+&lt;h2 id=&quot;大功告成&quot;&gt;大功告成！&lt;/h2&gt;
+&lt;p&gt;恭喜，你的 WordPress 博客已经部署完成，您可以通过浏览器访问博客查看效果。&lt;/p&gt;
+
+&lt;p&gt;通过IP地址查看：
+博客访问地址：http://yourip/wp-admin/install.php&lt;/p&gt;
+
+&lt;p&gt;通过域名查看：
+博客访问地址：http://www.yourdomain.com/wp-admin/install.php，其中替换 www.yourdomain.com 为之前申请的域名。&lt;/p&gt;
+
+&lt;p&gt;管理员页面： http://www.yourdomain.com/wp-admin&lt;/p&gt;
+
+&lt;h2 id=&quot;后记&quot;&gt;后记&lt;/h2&gt;
+&lt;p&gt;接下来你要写自己的博客了，一般而言要考虑下面几个问题：&lt;/p&gt;
+
+&lt;h3 id=&quot;主题&quot;&gt;主题&lt;/h3&gt;
+&lt;p&gt;有很多主题，官方的比较简单，你可以百度找找。&lt;/p&gt;
+
+&lt;h3 id=&quot;插件&quot;&gt;插件&lt;/h3&gt;
+&lt;p&gt;我使用了下面三个插件&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Akismet Anti-Spam ： 预装的，保护你免受垃圾邮件侵扰&lt;/li&gt;
+  &lt;li&gt;Hello Dolly ：预装的，提供点乐子 XD&lt;/li&gt;
+  &lt;li&gt;WP Editor.md ： 或许这是一个WordPress中最好，最完美的Markdown编辑器。但是你喜欢Markdown，为什么不试试jekyll或Hexo解决方案呢 XD&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;图片存储&quot;&gt;图片存储&lt;/h3&gt;
+&lt;p&gt;刚搭建的博客，你可以先把图片放在自己的主机上，如果文章中图片较多的话，主机空间可能会限制图片存储。
+寻找一个稳定易用的图床，方便图片的使用和存储，这里推荐一个优秀的国外免费图床：photobucket。&lt;/p&gt;
+
+&lt;h3 id=&quot;ssl证书&quot;&gt;SSL证书&lt;/h3&gt;
+&lt;p&gt;虽然说你的博客内容没什么好加密的，但你进入控制台的时候最好还是使用https加密。你可以找vps托管商申请一个SSL证书，安装就不详述了。&lt;/p&gt;
+
+&lt;h2 id=&quot;参考资料&quot;&gt;参考资料&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;腾讯云开发者实验室 https://www.qcloud.com/developer/labs/&lt;/li&gt;
+  &lt;li&gt;静候那一米阳光 - 简书 http://www.jianshu.com/p/56750622cac9&lt;/li&gt;
+  &lt;li&gt;知乎 https://www.zhihu.com/question/19594033&lt;/li&gt;
+&lt;/ul&gt;
+
+</description>
+        <pubDate>Tue, 15 Aug 2017 11:11:11 +0800</pubDate>
+        <link>http://localhost:4000/2017/08/build-your-blog-site-with-wordpress/</link>
+        <guid isPermaLink="true">http://localhost:4000/2017/08/build-your-blog-site-with-wordpress/</guid>
+        
+        <category>wordpress</category>
+        
+        <category>linux</category>
+        
+        
+        <category>linux</category>
         
       </item>
     
