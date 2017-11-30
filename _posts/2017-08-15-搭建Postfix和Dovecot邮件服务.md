@@ -10,6 +10,8 @@ tags: linux email
 搭建 Postfix、Dovecot 邮件服务
 -->
 
+个人站点建好后，如果希望它能在有消息的时候第一时间通知你，你需要一个邮件服务器。下面介绍一个邮件服务器的搭建过程。
+
 说明：
 * 参考资料 腾讯云开发者实验室 https://www.qcloud.com/developer/labs/lab/10096
 * 实验使用的系统是centos 7.2，如果你使用的是其他版本，请自行替换修改系统服务的相关命令。
@@ -19,7 +21,7 @@ tags: linux email
 ## 1.准备域名
 
 ### 域名注册
-如果您还没有域名，可以在腾讯云、阿里云上选购，或在淘宝上购买。
+如果你还没有域名，可以在腾讯云、阿里云上选购，或在淘宝上购买。
 
 ### 域名解析
 域名购买完成后, 需要将域名解析到实验云主机上，
@@ -94,6 +96,7 @@ postconf -e 'smtpd_tls_key_file = /etc/pki/dovecot/private/dovecot.pem'
 ```
 配置中 Postfix 使用 sasl 和 tls 来完成身份认证和传输信息加密。
 试验中使用了 Dovecot 默认的 ssl 证书和私钥，如果你需要修改为自己的，请替换最后两行配置的路径。
+
 ### 配置 smtps
 部分邮件客户端依赖于使用 465 端口提供加密连接，所以我们修改配置，允许 Postfix 使用 465 端口发送邮件。
 打开 /etc/postfix/master.cf 文件，将如下两行前的 # 去除：
@@ -102,6 +105,7 @@ smtps inet n - n - - smtpd
 -o smtpd_tls_wrappermode=yes
 ```
 然后保存文件。
+
 #### 启动
 使用以下命令，将 Postfix 设为自动启动并首次启动该服务：
 ```shell
@@ -114,6 +118,7 @@ Postfix 系统的日志文件在系统的这个目录下的 /var/log/maillog 文
 ## 4.Dovecot
 
 ### 配置 Dovecot
+
 #### 修改 dovecot.conf
 打开 /etc/dovecot/dovecot.conf 文件，在最下方加入以下配置：
 
