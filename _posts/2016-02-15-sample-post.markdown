@@ -1,7 +1,9 @@
 ---
 layout: post
 title: Sample Post
-date: 2016-02-15 15:32:24.000000000 +09:00
+date: 2016-02-15 15:32:24 +09:00
+categories: 
+tags:
 ---
 
 # head 1

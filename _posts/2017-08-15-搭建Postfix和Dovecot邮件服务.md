@@ -1,9 +1,9 @@
 ---
 layout: post
 title: 搭建 Postfix、Dovecot 邮件服务
-date: 2017-08-15 11:11:11.000000000 +08:00
+date: 2017-08-15 11:11:11 +08:00
 categories: linux
-tags: email linux
+tags: linux email
 
 ---
 <!---

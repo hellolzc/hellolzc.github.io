@@ -1,9 +1,9 @@
 ---
 layout: post
 title: 搭建 WordPress 个人博客
-date: 2017-08-15 11:11:11.000000000 +08:00
+date: 2017-08-15 11:11:11 +08:00
 categories: linux
-tags: wordpress linux
+tags: linux wordpress
 
 ---
 <!---

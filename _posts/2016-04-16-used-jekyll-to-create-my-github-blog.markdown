@@ -1,9 +1,9 @@
 ---
 layout: post
 title: 用Jekyll搭建的Github Pages个人博客
-date: 2016-04-16 11:11:11.000000000 +09:00
+date: 2016-04-16 11:11:11 +09:00
 categories: Jekyll Github
-tags: Jekyll&emsp;Github
+tags: Jekyll Github
 
 ---
 
