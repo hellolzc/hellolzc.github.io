@@ -5,8 +5,8 @@
     <description>码农hellolzc的小站.</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Wed, 29 Nov 2017 13:52:53 +0800</pubDate>
-    <lastBuildDate>Wed, 29 Nov 2017 13:52:53 +0800</lastBuildDate>
+    <pubDate>Thu, 30 Nov 2017 12:26:28 +0800</pubDate>
+    <lastBuildDate>Thu, 30 Nov 2017 12:26:28 +0800</lastBuildDate>
     <generator>Jekyll v3.4.0</generator>
     
       <item>
@@ -208,8 +208,8 @@ Jun 26 12:28:40 localhost dovecot: master: Dovecot v2.2.10 starting up for imap,
 （该配置在某些邮件客户端下可能因为使用了通用证书而出现使用异常）&lt;/p&gt;
 </description>
         <pubDate>Tue, 15 Aug 2017 11:11:11 +0800</pubDate>
-        <link>http://localhost:4000/2017/08/%E6%90%AD%E5%BB%BAPostfix&Dovecot%E9%82%AE%E4%BB%B6%E6%9C%8D%E5%8A%A1/</link>
-        <guid isPermaLink="true">http://localhost:4000/2017/08/%E6%90%AD%E5%BB%BAPostfix&Dovecot%E9%82%AE%E4%BB%B6%E6%9C%8D%E5%8A%A1/</guid>
+        <link>http://localhost:4000/2017/08/%E6%90%AD%E5%BB%BAPostfix%E5%92%8CDovecot%E9%82%AE%E4%BB%B6%E6%9C%8D%E5%8A%A1/</link>
+        <guid isPermaLink="true">http://localhost:4000/2017/08/%E6%90%AD%E5%BB%BAPostfix%E5%92%8CDovecot%E9%82%AE%E4%BB%B6%E6%9C%8D%E5%8A%A1/</guid>
         
         <category>email</category>
         
