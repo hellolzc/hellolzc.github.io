@@ -8,12 +8,12 @@ tags: linux
 
 相信不少人都曾经为在Linux下解压文件而头疼，笔者将解压文件的方法总结了一下，以备查阅。
 
-## Linux解压缩命令总结
+## Linux下压缩和解压缩命令总结
 
 先上一张清单~
 
-| 文件类型扩展名 | 解压命令                                                  | 压缩命令         |
-| ---------    | --------------------------------------                    | ---------------------------  |
+| 文件扩展名 | 解压命令                                                  | 压缩命令         |
+| :---------   | :--------------------------------------                   | :---------------------------  |
 | .gz          | 法1：gunzip FileName.gz </br> 法2：gzip -d FileName.gz     | gzip FileName           |
 | **.tar.gz**  | tar zxvf FileName.tar.gz                                  | tar zcvf FileName.tar.gz DirName |
 | .bz2         | 法1：bzip2 -d FileName.bz2 </br> 法2：bunzip2 FileName.bz2 | bzip2 -z FileName            |
@@ -36,6 +36,7 @@ $ tar [-cxtzjvfpPN] 文件与目录 ....
 ```
 
 ### 参数：
+
 ```
 -c ：建立一个压缩文件的参数指令(create 的意思)；
 -x ：解开一个压缩文件的参数指令！
@@ -167,7 +168,7 @@ gzip usr.tar  # 压缩 tar 备份文件 usr.tar，此时压缩文件的扩展名
 
 * tar命令的详细解释 - CSDN博客
 http://blog.csdn.net/eroswang/article/details/5555415/
+
 * tar/gz/bz/gz2/bz2...压缩与解压缩 - CSDN博客
 http://blog.csdn.net/yjier/article/details/6859580
-
 
