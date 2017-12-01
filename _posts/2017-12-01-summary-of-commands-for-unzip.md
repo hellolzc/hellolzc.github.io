@@ -12,13 +12,13 @@ tags: linux
 
 先上一张清单~
 
-| 文件扩展名 | 解压命令                                                  | 压缩命令         |
-| :---------   | :--------------------------------------                   | :---------------------------  |
-| .gz          | 法1：gunzip FileName.gz </br> 法2：gzip -d FileName.gz     | gzip FileName           |
+| 文件扩展名     | 解压命令                                                  | 压缩命令         |
+| :---------   | :--------------------------------------                   | :---------------------- |
+| .gz          | 法1：gunzip FileName.gz <br> 法2：gzip -d FileName.gz      | gzip FileName           |
 | **.tar.gz**  | tar zxvf FileName.tar.gz                                  | tar zcvf FileName.tar.gz DirName |
-| .bz2         | 法1：bzip2 -d FileName.bz2 </br> 法2：bunzip2 FileName.bz2 | bzip2 -z FileName            |
+| .bz2         | 法1：bzip2 -d FileName.bz2 <br /> 法2：bunzip2 FileName.bz2 | bzip2 -z FileName            |
 | .tar.bz2     | tar jxvf FileName.tar.bz2                                 | tar jcvf FileName.tar.bz2 DirName |
-| .bz          | 法1：bzip2 -d FileName.bz </br> 法2：bunzip2 FileName.bz   | 未知                           |
+| .bz          | 法1：bzip2 -d FileName.bz <br> 法2：bunzip2 FileName.bz    | 未知                           |
 | .tar.bz      | tar jxvf FileName.tar.bz                                  | 未知                           |
 | .Z           | uncompress FileName.Z                                     | compress FileName              |
 | .tar.Z       | tar Zxvf FileName.tar.Z                                   | tar Zcvf FileName.tar.Z DirName |
