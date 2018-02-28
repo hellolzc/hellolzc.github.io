@@ -7,7 +7,13 @@ tags: Jekyll Github
 
 ---
 
-转载自[joe-liu](joe-liu.com)的博客,内容有修改。
+刚开始我在CSDN上注册了一个博客，但是觉的CSDN限(bi)制(ge)太(bu)多(gao),就试着在我租的vps上建一个wordpress站点。折腾过程你可以看看我的[wordpress建站教程](https://hellolzc.github.io/2017/08/build-your-blog-site-with-wordpress/)。
+
+后来发现使用markdown写文章的时候wordpress需要使用额外的插件。由于我的机器配置不高，mysql运行够呛，我转投了jekyll的怀抱。为什么选择jekyll而不用hexo、hugo呢？因为jekyll可以由github pages自动编译生成页面，省去了配置本地环境的麻烦。
+
+下面的内容是我当时参考的文章，搬运自[joe-liu](joe-liu.com)的博客，内容有修改。
+
+================ 华丽的分割线 =================
 
 &emsp;&emsp;近半年一直忙于项目开发，不落得空。近期慢慢清闲了，终于有机会可以写写属于自己的技术博客。
 

@@ -19,7 +19,9 @@ tags: linux
 如果是国内教育网用户，推荐使用清华的源`mirrors.tuna.tsinghua.edu.cn` 或中科大的源 `mirrors.ustc.edu.cn`。
 如果是非教育网用户， 也可以使用阿里的源，听说速度也不错。
 
-## 修改grub引导等待时间
+## 修改grub引导
+grub引导程序默认等待10秒，如果想要加快开机速度，可以修改grub配置。
+
 grub的配置文件在 `/boot/grub/grub.cfg`,但该文件实际上是根据 `/etc/default/grub` 的配置自动生成的。
 
 ```bash
@@ -27,6 +29,10 @@ sudo vim /etc/default/grub
 ```
 
 注释掉 `GRUB_HIDDEN_TIMEOUT=0`， 修改 `GRUB_TIMEOUT=3`， 这里的3指的是等待3秒的意思。
+
+你还可以修改默认启动项，其中的`GRUB_DEFAULT=0`一行就是设置的默认启动项了。GRUB启动项是按照启动菜单依次使用数字进行索引的，起始数字为0。
+结合开机时出现的系统启动菜单，我的Windows的启动项在第5项，因此如果想让windows成为默认启动项，这个参数就需要修改为4。
+
 重新生成grub的配置文件：
 
 ```bash
