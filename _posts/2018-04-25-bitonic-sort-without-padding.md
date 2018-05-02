@@ -10,6 +10,8 @@ tags: algorithm c parallel
 <!-- markdownlint-disable MD002 -->
 <!-- markdownlint-disable MD041 -->
 
+双调排序是比较顺序与数据无关的排序方法， 特别适合做并行计算，例如用GPU、FPGA来计算。
+当要排序的数的个数不是2的幂时，处理时较为困难。本文介绍了一种非padding的解决方案。
 
 ## 算法实现目标
 
