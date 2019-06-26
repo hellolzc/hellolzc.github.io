@@ -10,7 +10,7 @@ tags: linux
 
 | 类别           | 常用软件                            |
 | :---------    | :--------------------------------- |
-| 编程编辑器      | **vscode** vim sublime atom        |
+| 编程编辑器      | **vscode** vim-nox(原生支持python3，不用自己编译) sublime atom        |
 | IDE           |  Eclipse pycharm codeblocks MATLAB  |
 | 运行环境       |  Python JAVA                        |
 | 字典           |  **goldendict**                     |
@@ -23,12 +23,13 @@ tags: linux
 | 视频处理        |  ffmpeg（专业工具，常看手册）          |
 | 图片编辑        |  **Kolorpaint**（类似画图）           |
 | 截图工具        |  *“print screen” 或 “shift“+”printscreen”* <br> shutter |
-| 磁盘管理        |  Gpated分区编辑器                                         |
+| 系统管理        |  Gpated分区编辑器   **htop**                             |
 | 运行windows软件 |  **Oracle VM VirtualBox**   Wine                        |
-| 笔记软件        |  **NixNote2**                                           |
-| OFFICE         |  *libreoffice* （新版本更好用）<br>   wpsoffice（支持不行，体验越来越烂了。。） |
+| 笔记软件        |  NixNote2                                               |
+| OFFICE         |  *libreoffice* （新版本更好用）<br>   wpsoffice（官方最新版可以试试） |
 | PT下载         |  Transimission                                           |
 | 代理服务器      |  **shadowsocks-qt5**                                     |
 | 安全工具        |  gufw（防火墙图形化前端）                                   |
+| 远程连接        |  teamview *remmina*                                       |
 | 文件共享        |  samba                                                   |
 | 串口控制        |  gtktem                                                  |
