@@ -12,6 +12,8 @@ tags: linux
 
 ubuntu放弃了unity，改用gnome，很多设置方式都改了，因此今天(2020-1-29)更新此文。
 
+参考文章： https://www.cnblogs.com/youxia/p/LinuxDesktop003.html
+
 --------------------------- 分割线 ---------------------------
 
 参考文章： https://ifhw.github.io/2016/01/20/ubuntu-notes/index.html
@@ -116,7 +118,7 @@ sudo /etc/init.d/netwroking restart
 
 ## 安装字体
 
-将windows下的一些字体搬运至linux下，字体可以在window目录下搜索得到。
+将windows下的一些字体搬运至linux下，字体可以在window目录下搜索得到，一般在`C:\Windows\Fonts`下面。
 可以用字体查看器安装，也可以直接将目录移到/usr/share/fonts/目录下
 
 ### Courier
@@ -167,16 +169,25 @@ sudo /etc/init.d/netwroking restart
 sudo apt install gnome-tweak-tool  # 安装优化工具
 sudo apt install gnome-shell-extensions  # 安装官方推荐GNOME扩展，一般来说对Ubuntu兼容性较好
 # 安装chrome gnome工具 配合chrome插件方便可以直接访问GNOME官网下载安装并管理插件
-sudo apt install chrome-gnome-tool 
 sudo apt install chrome-gnome-shell
 ```
 
 我目前使用的插件有如下几个：
-* Dash to dock - 将Ubuntu的dock从dash类似的样式变成MacOS类型的样式
+* Dash to dock - 将Ubuntu的dock从dash类似的样式变成MacOS类型的样式。我喜欢把Dock放底部，配合自动隐藏和鼠标撞击显示体验很棒。
 * Frippery move clock - 将时钟从中间移动到右边
 * Pixel saver - 最大化的时候标题栏和顶部状态栏合并，增加空间
 * Show desktop button - 提供一个可以最小化所有窗口显示桌面的按钮
-* Topicons plus - 将托盘图标显示与部状态栏合并
+* Topicons plus - 将托盘图标显示与部状态栏合并(使用Wine时用的上)
+* hide-activities - 将左上角“活动”按钮隐藏，这个功能可以用"Super"键代替(也就是Win键)
+
+PS：使用Pixel saver之后确实节省了空间，但最大化最小化和关闭按钮都不在屏幕的最右端，想关窗口的时候找起来有点费劲。
+我们可以把它们移到最左边，类似Unity桌面的做法。这个需要使用命令行工具`gsettings`。
+
+```bash
+gsettings get org.gnome.desktop.wm.preferences button-layout  # 返回现在的设置，我的是':minimize,maximize,close'
+gsettings set org.gnome.desktop.wm.preferences button-layout 'close,minimize,maximize:'  # 参考上一步，修改之后立即生效
+```
+
 
 
 ## 安装其他软件
