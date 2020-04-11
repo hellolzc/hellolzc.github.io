@@ -10,7 +10,10 @@ tags: linux
 安装ubuntu之后要做的事
 --->
 
-ubuntu放弃了unity，改用gnome，很多设置方式都改了，因此今天(2020-1-29)更新此文。
+ubuntu 18.04放弃了unity，改用gnome，很多设置方式都改了，因此今天(2020-1-29)更新此文。
+
+PS: ubuntu 16.04是我用过的打磨的最好的Linux桌面系统，个人觉得ubuntu 18.04很多细节没有做好。
+所以建议还在用16.04的小伙伴不要升级。
 
 参考文章： https://www.cnblogs.com/youxia/p/LinuxDesktop003.html
 
@@ -118,48 +121,45 @@ sudo /etc/init.d/netwroking restart
 
 ## 安装字体
 
+可以用字体查看器安装，也可以直接将目录移到`/usr/share/fonts/`目录下
+
+### Windows常用字体
+
 将windows下的一些字体搬运至linux下，字体可以在window目录下搜索得到，一般在`C:\Windows\Fonts`下面。
-可以用字体查看器安装，也可以直接将目录移到/usr/share/fonts/目录下
+安装了它们再安装WPS，写文档时可以获得和Windows相当的体验。
 
-### Courier
-    COURBD.TTF
-    COURBI.TTF
-    COURI.TTF
-    COUR.TTF
+* Courier <br>
+    COURBD.TTF, COURBI.TTF, COURI.TTF, COUR.TTF
 
-### 微软雅黑
-    msyhbd.ttc
-    MSYHBD.TTF
-    msyh.ttc
-    MSYH.TTF
+* 微软雅黑 <br>
+    msyhbd.ttc, MSYHBD.TTF, msyh.ttc, MSYH.TTF
 
-### Monotype Corsiva
-    MTCORSVA.TTF
-    monotypesorts.ttf
+* 等线 <br>
+    Deng.ttf, Dengb.ttf, Dengl.ttf,
 
-### 仿宋 黑体 楷体 宋体
-    SIMFANG.TTF
-    SIMHEI.TTF
-    SIMKAI.TTF
-    simsun.ttc
+* Monotype Corsiva <br>
+    MTCORSVA.TTF, monotypesorts.ttf
 
-### Times New Roman
-    TIMESBD.TTF
-    TIMESBI.TTF
-    TIMESI.TTF
-    TIMES.TTF
+* 仿宋 黑体 楷体 宋体 <br>
+    SIMFANG.TTF, SIMHEI.TTF, SIMKAI.TTF, simsun.ttc
 
-### 符号字体
-    Mt Extra Tiger.ttf
-    mtextra_01.ttf
-    Symbol Tiger Expert.ttf
-    symbol.ttf
-    Symbol Tiger.ttf
-    wingding.ttf
-    WINGDNG2.TTF
-    WINGDNG3.TTF
+* Times New Roman <br>
+    TIMESBD.TTF, TIMESBI.TTF, TIMESI.TTF, TIMES.TTF
+
+* 符号字体 <br>
+    impact.ttf,
+    Mt Extra Tiger.ttf, mtextra_01.ttf,
+    Symbol Tiger Expert.ttf, symbol.ttf, Symbol Tiger.ttf,
+    wingding.ttf, WINGDNG2.TTF, WINGDNG3.TTF
+
+我整理的如图：
+![fonts](/assets/2018-02-10/fonts.png)
+
 
 ### 一些写代码专用字体
+
+这些可以从网上下载，我喜欢下面两个:
+
     MONACO.TTF
     consolas-powerline-vim
 
