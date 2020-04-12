@@ -28,7 +28,9 @@ tags: speech
 （3）HSFs（high level statistics functions）是在LLDs的基础上做一些统计而得到的特征，比如均值，最大值等等。HSFs是对utterance上的多帧语音做统计，所以是用来表示一个utterance的特征。<br>
 （4）后面讲的一些特征集，是由一些专家设计的一些特征，包括了LLDs和HSFs。
 
-### 二：GeMAPS特征集
+### 二：GeMAPS特征集和eGeMAPS特征集
+
+#### GeMAPS特征集
 
 （1）GeMAPS特征集总共62个特征，这62个都是HSF特征，是由18个LLD特征计算得到。下面先介绍18个LLD特征，然后介绍62个HSF特征。这里只简单介绍每个特征的概念，不涉及具体计算细节。<br>
 （2）18个LLD特征包括6个频率相关特征，3个能量/振幅相关特征，9个谱特征。<br>
@@ -38,7 +40,7 @@ tags: speech
 （6）9个谱特征包括，Alpha Ratio（50-1000Hz的能量和除以1-5kHz的能量和），Hammarberg Index（0-2kHz的最强能量峰除以2-5kHz的最强能量峰），Spectral Slope 0-500 Hz and 500-1500 Hz（对线性功率谱的两个区域0-500 Hz和500-1500 Hz做线性回归得到的两个斜率），Formant 1, 2, and 3 relative energy（前三个共振峰的中心频率除以基音的谱峰能量），Harmonic difference H1-H2（第一个基音谐波H1的能量除以第二个基音谐波的能量），Harmonic difference H1-A3（第一个基音谐波H1的能量除以第三个共振峰范围内的最高谐波能量）。<br>
 （7）对18个LLD做统计，计算的时候是对3帧语音做symmetric moving average。首先计算算术平均和coefficient of variation（计算标准差然后用算术平均规范化），得到36个统计特征。然后对loudness和pitch运算8个函数，20百分位，50百分位，80百分位，20到80百分位之间的range，上升/下降语音信号的斜率的均值和标准差。这样就得到16个统计特征。上面的函数都是对voiced regions（非零的F0）做的。对Alpha Ratio，Hammarberg Index，Spectral Slope 0-500 Hz and 500-1500 Hz做算术平均得到4个统计特征。另外还有6个时间特征，每秒loudness峰的个数，连续voiced regions（F0>0）的平均长度和标准差，unvoiced regions（F0=0）的平均长度和标准差，每秒voiced regions的个数。36+16+4+6得到62个特征。
 
-### 三：eGeMAPS特征集
+#### eGeMAPS特征集
 
 （1）eGeMAPS是GeMAPS的扩展，在18个LLDs的基础上加了一些特征，包括5个谱特征：MFCC1-4和Spectral flux（两个相邻帧的频谱差异）和2个频率相关特征：第二个共振峰和第三个共振峰的带宽。<br>
 （2）对这扩展的7个LLDs做算术平均和coefficient of variation（计算标准差然后用算术平均规范化）可以得到14个统计特征。对于共振峰带宽只在voiced region做，对于5个谱特征在voiced region和unvoiced region一起做。<br>
@@ -46,26 +48,46 @@ tags: speech
 （4）另外，还加多一个equivalent sound level 。<br>
 （5）所以总共得到14+11+1=26个扩展特征，加上原GeMAPS的62个特征，得到88个特征，这88个特征就是eGeMAPS的特征集。
 
-### 四：ComParE特征集
+### 三：ComParE特征集
 
 （1）ComParE，Computational Paralinguistics ChallengE，是InterSpeech上的一个挑战赛，从13年至今（2018年），每年都举办，每年有不一样的挑战任务。<br>
 （2）从13年开始至今（2018年），ComParE的挑战都会要求使用一个设计好的特征集，这个特征集包含了6373个静态特征，是在LLD上计算各种函数得到的，称为ComParE特征集。<br>
-（3）可以通过openSmile开源包来获得，另外前面提到的eGeMAPS也可以用openSmile获得。
 
-### 五：2009 InterSpeech挑战赛特征
+
+### 四：2009-2013 InterSpeech挑战赛特征
+
+#### IS09
 （1）前面说的6373维特征集ComparE是13年至今InterSpeech挑战赛中用的。<br>
 （2）有论文还用了09年InterSpeech上Emotion Challenge提到的特征，总共有384个特征，计算方法如下。<br>
 （3）首先计算16个LLD，过零率，能量平方根，F0，HNR（信噪比，有些论文也叫vp，voice probability 人声概率），MFCC1-12，然后计算这16个LLD的一阶差分，可以得到32个LLD。<br>
 （4）对这32个LLD应用12个统计函数，最后得到32x12 = 384个特征。<br>
-（5）同样可以通过openSmile来获得。
+#### IS10， IS11， IS12， IS13
+抱歉我懒得写了哈哈XD
+
+### 五：小结
+
+| 配置文件 名称           | 全局特征(HSF)维度 | 时序特征 (LLD)维度 | 备注                                               |
+| ----------------------- | ----------------- | ------------------ | ---------------------------------------------------- |
+| IS09_emotion.conf       | 384               | timestep X 32      | INTERSPEECH 2009情感挑战赛特征集             |
+| IS10_paraling.conf      | 1582              | timestep x 76      | INTERSPEECH 2010 Paralinguistic挑战赛特征集    |
+| IS11_speaker_state.conf | 4368              | timestep x 120     | INTERSPEECH 2011说话人状态挑战赛特征集    |
+| IS12_speaker_trait.conf | 5757              | timestep x 120     | INTERSPEECH 2012说话人特征挑战赛特征集    |
+| IS13_ComParE.conf       | 6373              | timestep x 130     | Interspeech 2013 ComParE emotion sub-challenge       |
+| ComParE_2016.conf       | 6373              | timestep x 130     | ComParE 2013特征集更新版, numerical fixes |
+
+上述几个特征都包含在了我的脚本中:
+- <https://github.com/hellolzc/emodb-SER/tree/master/opensmile/scripts>
+
 
 ## BoAW
 （1）BoAW，bag-of-audio-words，是特征的进一步组织表示，是根据一个codebook对LLDs做计算得到的。这个codebook可以是k-means的结果，也可以是对LLDs的随机采样。<br>
 （2）在论文会看到BoAW特征集的说法，指的是某个特征集的BoAW形式。比如根据上下文“使用特征集有ComparE和BoAW”，可以知道，这样的说法其实是指原来的特征集ComparE，和ComparE经过计算后得到的BoAW表示。<br>
 （3）可以通过openXBOW开源包来获得BoAW表示。
 
-## YAAFE特征
-（1）Yet Another Audio Feature Extractor, 支持Python和MATLAB。使用YAAFE库，具体特征见YAAFE主页。
+## 其他特征和特征提取工具
+（1）YAAFE特征: Yet Another Audio Feature Extractor, 支持Python和MATLAB。使用YAAFE库，具体特征见YAAFE主页。
+（2）COVAREP特征: MATLAB开发的工具包。详见他们发表的论文。
+（3）其他常见的语音特征工具如librosa，kaldi有时也会用在语音情感分类中，它们不是针对语音情感分类设计的，但有时也会使用。
 
 ## 参考资料
 
@@ -73,4 +95,5 @@ tags: speech
 * [2] [论文：2013 InterSpeech ComparE挑战赛（2013 InterSpeech）](https://www.isca-speech.org/archive/archive_papers/interspeech_2013/i13_0148.pdf)
 * [3] [论文：2009 InterSpeech情感挑战（2009 InterSpeech）](https://www.isca-speech.org/archive/archive_papers/interspeech_2009/papers/i09_0312.pdf)
 * [4] [论文：BoAW用于语音情感识别（2016 InterSpeech）](https://www.isca-speech.org/archive/Interspeech_2016/pdfs/1124.PDF)
-* [5] [YAAFE主页](http://yaafe.sourceforge.net/)
+* [5] [论文：COVAREP工具](https://ieeexplore.ieee.org/document/6853739)
+* [6] [YAAFE主页](http://yaafe.sourceforge.net/)
