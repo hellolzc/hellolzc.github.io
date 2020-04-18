@@ -15,8 +15,8 @@ tags: coding
 于是从图书馆借来读，收获颇丰。这里记录了读书时的一些笔记。
 
 设计模式领域有两本非常有名的书：
-* Head First Design Patterns  Eric Freeman, Elisabeth Freeman, Kathy Sierra, Bert Bates
-* Design Patterns Eric Gamma, Richard Helm, Ralph Johnson, JHohn Vlissides
+* Head First Design Patterns - Eric Freeman, Elisabeth Freeman, Kathy Sierra, Bert Bates
+* Design Patterns - Eric Gamma, Richard Helm, Ralph Johnson, JHohn Vlissides
 
 我现在只读了第一本，之后便尝试将自己所学应用到代码中去，有机会我会读第二本。
 
