@@ -1,16 +1,16 @@
 ---
 layout: post
 title: Jupyter Notebook版本控制
-date: 2020-01-30 14:17:00 +08:00
-categories: linux
-tags: vim linux
+date: 2020-06-19 20:31:00 +08:00
+categories: python
+tags: python
 ---
 
 Jupyter Notebook是一个非常方便做机器学习和数据分析的工具，但由于它将代码和输出混在了一起，非常不利于用Git进行版本控制。
 
 那么，可以将notebook转成python脚本再控制啊。
 
-完成 .ipynb 文件转换成 .py 文件的工作可以通过 post-save 的钩子自动进行。
+完成 .ipynb 文件转换成 .py 文件的工作可以通过 `post-save` 的钩子自动进行。
 
 只需要按照如下所示，修改 ipython 的配置文件即可：
 ```
@@ -28,6 +28,7 @@ from subprocess import check_call
 import re
 
 def clear_prompt(dir_path, nb_fname, log_func):
+    """remove the number in '# In[ ]:'"""
     name, ext = os.path.splitext(nb_fname)
     pattern = re.compile(r'^# In\[\d+\]:')
 
@@ -59,3 +60,5 @@ def post_save(model, os_path, contents_manager):
 c.FileContentsManager.post_save_hook = post_save
 
 ```
+
+建议将notebook放在一个单独的目录下面，这样生成的py文件就可以和其他代码很好的区分开了。
