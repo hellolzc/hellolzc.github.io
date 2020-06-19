@@ -12,7 +12,7 @@ tags: speech
 
 ## 写在前面
 
-本文大部分内容来源于 [PilgrimHui的CSDN博客](https://www.cnblogs.com/liaohuiqiang/p/10161033.html)，略有修改。
+本文部分内容来源于 [PilgrimHui的CSDN博客](https://www.cnblogs.com/liaohuiqiang/p/10161033.html)，笔者补充了一部分内容。
 感谢PilgrimHui博主，在我做实验时，他的博客给了我很多启发。
 
 笔者开源了调用 OpenSMILE 提取这些特征的脚本，读者可以从我的Github上获取。
@@ -57,16 +57,34 @@ tags: speech
 ### 四：2009-2013 InterSpeech挑战赛特征
 
 #### IS09
-（1）前面说的6373维特征集ComparE是13年至今InterSpeech挑战赛中用的。<br>
-（2）有论文还用了09年InterSpeech上Emotion Challenge提到的特征，总共有384个特征，计算方法如下。<br>
-（3）首先计算16个LLD，过零率，能量平方根，F0，HNR（信噪比，有些论文也叫vp，voice probability 人声概率），MFCC1-12，然后计算这16个LLD的一阶差分，可以得到32个LLD。<br>
-（4）对这32个LLD应用12个统计函数，最后得到32x12 = 384个特征。<br>
-#### IS10， IS11， IS12， IS13
-抱歉我懒得写了哈哈XD
+（1）前面说的6373维特征集ComparE是13年至今InterSpeech挑战赛中用的。有论文还用了09年InterSpeech上Emotion Challenge提到的特征，总共有384个特征，计算方法如下。<br>
+（2）首先计算16个LLD，过零率，能量平方根，F0，HNR（信噪比，有些论文也叫vp，voice probability 人声概率），MFCC1-12，然后计算这16个LLD的一阶差分，可以得到32个LLD。<br>
+（3）对这32个LLD应用12个统计函数，最后得到32x12 = 384个特征。<br>
+
+#### IS10 
+相比IS09额外添加了PCM响度、8个log Mel frequency band (0-7)、8个线谱对（LSP）频率（0-7）、F0的包络、发音概率、jitter和shimmer相关特征、额外的两个MFCC系数。
+最终有76个LLD，统计后有1582个特征。
+
+
+#### IS11 
+相比IS10，加入derived loudness measure 和 Relative Spectral Analysis (RASTA)-style filtered auditory spectra
+
+
+#### IS12
+相比IS11，加入harmonic-to-noise ratio (HNR), spectral harmonicity, 和psychoacoustic spectral sharpness
+
+#### IS13
+
+InterSpeech ComparE挑战赛使用的特征集，后来经过一些数值上小修订成为了前面所说的ComParE特征集，一共6373个feature，130维的LLD。
+
+详细的描述建议看文献：
+
+F. Weninger, F. Eyben, B. W. Schuller, M. Mortillaro, and K. R. Scherer, “On the acoustics of emotion in audio: What speech, music, and sound have in common,” Front. Psychol., vol. 4, no. MAY, pp. 1–12, 2013
+
 
 ### 五：小结
 
-| 配置文件 名称           | 全局特征(HSF)维度 | 时序特征 (LLD)维度 | 备注                                               |
+| 配置文件 名称           | 全局特征(HSF)维度 | 时序特征 (LLD)维度 | 描述                                               |
 | ----------------------- | ----------------- | ------------------ | ---------------------------------------------------- |
 | IS09_emotion.conf       | 384               | timestep X 32      | INTERSPEECH 2009情感挑战赛特征集             |
 | IS10_paraling.conf      | 1582              | timestep x 76      | INTERSPEECH 2010 Paralinguistic挑战赛特征集    |

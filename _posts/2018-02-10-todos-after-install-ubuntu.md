@@ -191,4 +191,4 @@ gsettings set org.gnome.desktop.wm.preferences button-layout 'close,minimize,max
 
 
 ## 安装其他软件
-详情见下一篇文章《ubuntu下推荐的软件》
+详情见下一篇文章[《ubuntu下推荐的软件》](https://hellolzc.github.io/2018/02/recommended-softwares-on-ubuntu/)

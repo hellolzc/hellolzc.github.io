@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Vim 使用笔记
+title: Vim 不放弃指南
 date: 2020-01-30 14:17:00 +08:00
 categories: linux
 tags: vim linux

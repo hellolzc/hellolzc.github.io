@@ -64,7 +64,7 @@ Anaconda配置的虚拟环境适合给整个系统使用。
 
 ### Vim
 
-看我的上一篇博客《Vim 使用笔记》。
+看我的上一篇博客[《Vim 使用笔记》](https://hellolzc.github.io/2020/01/note-of-vim/)。
 
 ### Tmux
 
