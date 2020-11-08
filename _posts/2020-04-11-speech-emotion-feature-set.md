@@ -16,7 +16,7 @@ tags: speech
 感谢PilgrimHui博主，在我做实验时，他的博客给了我很多启发。
 
 笔者开源了调用 OpenSMILE 提取这些特征的脚本，读者可以从我的Github上获取。
-脚本地址：<https://github.com/hellolzc/emodb-SER/tree/master/opensmile/scripts>
+脚本地址：<https://github.com/hellolzc/SpeechEmotionRecognition-emodb/tree/master/opensmile/scripts>
 
 ## OpenSMILE工具和相关特征
 
@@ -94,7 +94,7 @@ F. Weninger, F. Eyben, B. W. Schuller, M. Mortillaro, and K. R. Scherer, “On t
 | ComParE_2016.conf       | 6373              | timestep x 130     | ComParE 2013特征集更新版, numerical fixes |
 
 上述几个特征都包含在了我的脚本中:
-- <https://github.com/hellolzc/emodb-SER/tree/master/opensmile/scripts>
+- <https://github.com/hellolzc/SpeechEmotionRecognition-emodb/tree/master/opensmile/scripts>
 
 
 ## BoAW
