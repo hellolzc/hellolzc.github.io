@@ -31,6 +31,17 @@
             (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
         })();
     </script>
+  
+  {% elsif site.comment.utterances %}
+    <div id="utterances_thread"></div>
+    <script src="https://utteranc.es/client.js"
+        repo="{{ site.comment.utterances }}"
+        issue-term="pathname"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+    </script>
+
   {% endif %}
   
   

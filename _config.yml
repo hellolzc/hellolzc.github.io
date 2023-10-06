@@ -31,8 +31,9 @@ paginate_path: "page/:num/"
 
 # Comment
 comment:
-    disqus: hellolzc
+    # disqus: hellolzc
     # duoshuo: 
+    utterances: hellolzc/hellolzc.github.io-comments
     
 # Social
 social:
