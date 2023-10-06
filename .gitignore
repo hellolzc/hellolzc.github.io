@@ -1,3 +1,9 @@
+# Bundler cache
+.bundle
+# bundle config set --local path 'vendor/bundle'
+# Install the gem in 'vendor/bundle' and ignore it in git, to avoid conficts among multiple projects
+vendor
+Gemfile.lock
 
 # Created by https://www.gitignore.io/api/jekyll,osx
 
