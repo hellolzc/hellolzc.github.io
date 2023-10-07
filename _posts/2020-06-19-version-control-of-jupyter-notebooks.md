@@ -2,7 +2,7 @@
 layout: post
 title: Jupyter Notebook版本控制
 date: 2020-06-19 20:31:00 +08:00
-categories: python
+categories: coding
 tags: python
 ---
 
