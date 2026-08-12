@@ -25,7 +25,7 @@ tags: linux
 | .tgz         | tar zxvf FileName.tgz                                     | 未知                             |
 | .tar.tgz     | tar zxvf FileName.tar.tgz                                 | tar zcvf FileName.tar.tgz FileName |
 | **.zip**     | unzip FileName.zip                                        | zip FileName.zip DirName         |
-| **.rar**     | rar a FileName.rar                                        | rar e FileName.rar              |
+| **.rar**     | rar e FileName.rar                                        | rar a FileName.rar              |
 
 ## tar命令
 
